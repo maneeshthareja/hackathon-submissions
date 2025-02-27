@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Submission</title>
+</head>
+<body>
+    <h2>Submit Your Hackathon Artifact</h2>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload</button>
+    <p id="status"></p>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(event) {
+                const fileContent = event.target.result.split(",")[1]; // Base64 encode file
+
+                const repoOwner = "YOUR_GITHUB_USERNAME"; // Change this
+                const repoName = "hackathon-submissions"; // Change this
+                const filePath = `submissions/${file.name}`;
+                const githubToken = prompt("Enter your GitHub Personal Access Token:"); // Secure this in production
+
+                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${githubToken}`,
+                        "Accept": "application/vnd.github.v3+json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `New submission: ${file.name}`,
+                        content: fileContent
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById("status").innerText = "File uploaded successfully!";
+                } else {
+                    document.getElementById("status").innerText = "Upload failed.";
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
