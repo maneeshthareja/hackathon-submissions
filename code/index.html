@@ -22,7 +22,7 @@
         let accessToken = null;
 
         function githubLogin() {
-            const redirectUri = window.location.origin + "/callback.html";
+            const redirectUri = window.location.origin + "/hackathon-submissions/code/callback.html";
             const authUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo&redirect_uri=${redirectUri}`;
             window.location.href = authUrl;
         }
