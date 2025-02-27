@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Login Callback</title>
+</head>
+<body>
+    <script>
+        const CLIENT_ID = "Ov23liQ4R4WxwBD8Btwv";
+        const CLIENT_SECRET = "22f5c55e149349f612951b13f06ee4605ef474f7";  // This should be handled on a backend for security reasons.
+
+        async function getAccessToken(code) {
+            const response = await fetch(`https://your-backend.com/github-auth?code=${code}`);
+            const data = await response.json();
+            return data.access_token;
+        }
+
+        async function handleGitHubCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("code")) {
+                const code = urlParams.get("code");
+                const token = await getAccessToken(code);
+                window.location.href = `/index.html?access_token=${token}`;
+            }
+        }
+
+        handleGitHubCallback();
+    </script>
+</body>
+</html>
