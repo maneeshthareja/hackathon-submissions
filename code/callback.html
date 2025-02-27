@@ -21,7 +21,7 @@
             if (urlParams.has("code")) {
                 const code = urlParams.get("code");
                 const token = await getAccessToken(code);
-                window.location.href = `/index.html?access_token=${token}`;
+                window.location.href = `/hackathon-submissions/code/index.html?access_token=${token}`;
             }
         }
 
