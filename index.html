@@ -25,7 +25,7 @@
             reader.onload = async function(event) {
                 const fileContent = event.target.result.split(",")[1]; // Base64 encode file
 
-                const repoOwner = "YOUR_GITHUB_USERNAME"; // Change this
+                const repoOwner = "maneeshthareja"; // Change this
                 const repoName = "hackathon-submissions"; // Change this
                 const filePath = `submissions/${file.name}`;
                 const githubToken = prompt("Enter your GitHub Personal Access Token:"); // Secure this in production
