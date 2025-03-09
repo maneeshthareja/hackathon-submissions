@@ -54,13 +54,7 @@
         async function handleRedirect() {
             const params = new URLSearchParams(window.location.search);
             if (params.has("code")) {
-                const response = await fetch(`${BACKEND_URL}/auth/github?code=${params.get("code")}`,{
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    mode: "cors"  // Ensure CORS mode is enabled
-});
+                const response = await fetch(`${BACKEND_URL}/auth/github?code=${params.get("code")}`);
                 const data = await response.json();
                 if (data.token) {
                     localStorage.setItem("github_token", data.token);
