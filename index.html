@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AWS Hackathon</title>
+    <script>
+        const CLIENT_ID = "Ov23li1M0IR9jyNorJ2k";
+        const BACKEND_URL = "https://your-backend-service.com";
+
+        async function checkLogin() {
+            const token = localStorage.getItem("github_token");
+            if (!token) {
+                window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
+                return;
+            }
+            const user = await fetch("https://api.github.com/user", {
+                headers: { "Authorization": `Bearer ${token}` }
+            }).then(res => res.json());
+
+            if (user.login) {
+                document.getElementById("user-info").innerText = `Logged in as ${user.login}`;
+            } else {
+                localStorage.removeItem("github_token");
+                window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
+            }
+        }
+
+        async function uploadFiles() {
+            let pptFile = document.getElementById("ppt").files[0];
+            let zipFile = document.getElementById("zip").files[0];
+            const token = localStorage.getItem("github_token");
+
+            if (!pptFile || !zipFile || !token) {
+                alert("Login and select both files.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("ppt", pptFile);
+            formData.append("zip", zipFile);
+
+            const response = await fetch(`${BACKEND_URL}/upload`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+                body: formData
+            });
+
+            if (response.ok) {
+                alert("Thanks! Your files have been uploaded.");
+            } else {
+                alert("Upload failed.");
+            }
+        }
+
+        async function handleRedirect() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has("code")) {
+                const response = await fetch(`${BACKEND_URL}/auth/github?code=${params.get("code")}`);
+                const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem("github_token", data.token);
+                    window.location.href = "/";
+                } else {
+                    alert("GitHub Login Failed");
+                }
+            } else {
+                checkLogin();
+            }
+        }
+
+        window.onload = handleRedirect;
+    </script>
+</head>
+<body>
+    <h2>Upload Your PPT and Code</h2>
+    <p id="user-info">Checking login...</p>
+    <input type="file" id="ppt" accept=".ppt,.pptx"><br>
+    <input type="file" id="zip" accept=".zip"><br>
+    <button onclick="uploadFiles()">Upload</button>
+</body>
+</html>
