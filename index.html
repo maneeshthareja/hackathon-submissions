@@ -58,7 +58,7 @@
                 const data = await response.json();
                 if (data.token) {
                     localStorage.setItem("github_token", data.token);
-                    window.location.href = "/";
+                    // window.location.href = "/";
                 } else {
                     alert("GitHub Login Failed");
                 }
